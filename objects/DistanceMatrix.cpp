@@ -7,6 +7,12 @@
 
 #include "../includes/DistanceMatrix.h"
 
+float calculateEuclideanDistance(int x1, int y1, int x2, int y2) {
+	int x_delta = x2 - x1;
+	int y_delta = y2 - y1;
+	return std::sqrt(std::pow(x_delta, 2) + std::pow(y_delta, 2));
+}
+
 DistanceMatrix::DistanceMatrix(std::string data_set) {
 	this->set_size = 0;  // This be a num read from the file
 	std::string data;
@@ -20,6 +26,11 @@ DistanceMatrix::DistanceMatrix(std::string data_set) {
 	this->dist_matrix = new float*[this->set_size];
 	for (int i = 0; i<this->set_size; i++) {
 		this->dist_matrix[i] = new float[this->set_size];
+		EuclideanPoint point1 = this->points_list[i];
+		for (int j = 0; j<this->set_size; j++) {
+			EuclideanPoint point2 = this->points_list[j];
+			this->dist_matrix[i][j] = calculateEuclideanDistance(point1.getX(), point1.getY(), point2.getX(), point2.getY());
+		}
 	}
 }
 
@@ -33,6 +44,10 @@ float** DistanceMatrix::getDistanceMatrix(){
 
 EuclideanPoint* DistanceMatrix::getListOfPoints() {
 	return this->points_list;
+}
+
+int DistanceMatrix::getSetSize() {
+	return this->set_size;
 }
 
 void DistanceMatrix::parse_data(std::string data_file, std::string& data, int& data_set_size) {
@@ -57,10 +72,4 @@ void DistanceMatrix::parse_data(std::string data_file, std::string& data, int& d
 		int y= std::stoi(param);
 		this->points_list[i] = EuclideanPoint(id, x, y);
 	}
-}
-
-float calculateEuclideanDistance(int x1, int y1, int x2, int y2) {
-	int x_delta = x2 - x1;
-	int y_delta = y2 - y1;
-	return std::sqrt(std::pow(x_delta, 2) + std::pow(y_delta, 2));
 }
