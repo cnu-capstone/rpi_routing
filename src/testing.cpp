@@ -14,4 +14,9 @@ using namespace std;
 int main() {
 	string file = "data/test.txt";
 	DistanceMatrix dm(file);
+	EuclideanPoint* list = dm.getListOfPoints();
+	for (int i = 0; i<100; i++) {
+		cout<<(list[i]).getPointID();
+		cout<<endl;
+	}
 }

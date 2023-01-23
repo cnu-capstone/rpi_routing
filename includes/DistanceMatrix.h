@@ -9,6 +9,8 @@
 #define DISTANCEMATRIX_H_
 #include <string>
 #include <sstream>
+#include <math.h>
+#include <cmath>
 #include "EuclideanPoint.h"
 #include "FileIO.h"
 
