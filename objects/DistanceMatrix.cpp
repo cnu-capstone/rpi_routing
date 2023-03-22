@@ -29,6 +29,10 @@ DistanceMatrix::DistanceMatrix(std::string data_set) {
 		EuclideanPoint point1 = this->points_list[i];
 		for (int j = 0; j<this->set_size; j++) {
 			EuclideanPoint point2 = this->points_list[j];
+			// Check if point falls inside any boundaries (1,1 - 3,3 for testing)
+//			if () {
+//
+//			}
 			this->dist_matrix[i][j] = calculateEuclideanDistance(point1.getX(), point1.getY(), point2.getX(), point2.getY());
 		}
 	}

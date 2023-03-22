@@ -10,6 +10,7 @@
 #include <string>
 #include <sstream>
 #include <math.h>
+#include <float.h>
 #include <cmath>
 #include "EuclideanPoint.h"
 #include "FileIO.h"
