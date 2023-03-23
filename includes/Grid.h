@@ -27,7 +27,7 @@ public:
 private:
 	int width;
 	int height;
-	std::vector<GridLocation> locations;
+//	std::vector<GridLocation> locations;  // Removed: adjacency_matrix inherently contains locations list
 	std::vector<std::pair<GridLocation, std::vector<GridLocation>>> adjacency_matrix;
 	bool in_bounds(GridLocation suspectLoc);
 	void parse_data(std::string data_file, std::string& data);

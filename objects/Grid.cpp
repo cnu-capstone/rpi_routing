@@ -13,10 +13,12 @@ Grid::Grid(std::string data_set) {
 	std::string data;
 	this->parse_data(data_set, data);
 
+	std::vector<GridLocation> locations = this->getLocations();
+
 	for (std::pair<GridLocation, std::vector<GridLocation>> Pair : this->adjacency_matrix) {
 		for (GridLocation neighbor : Pair.second) {
 			if (neighbor.x == UNDEFINED || neighbor.y == UNDEFINED) {
-				for (GridLocation loc : this->locations) {
+				for (GridLocation loc : locations) {
 					if (neighbor.id == loc.id) {
 						neighbor.x = loc.x;
 						neighbor.y = loc.y;
@@ -30,16 +32,20 @@ Grid::Grid(std::string data_set) {
 Grid::~Grid() {}
 
 std::vector<GridLocation> Grid::getNeighbors(int gridLocationID)  {
-	for (std::pair<GridLocation, std::vector<GridLocation>> Pair : this->adjacency_matrix) {
-		if (Pair.first.id == gridLocationID) {
-			return Pair.second;
+	for (std::pair<GridLocation, std::vector<GridLocation>> pair : this->adjacency_matrix) {
+		if (pair.first.id == gridLocationID) {
+			return pair.second;
 		}
 	}
 	return std::vector<GridLocation>{GridLocation{UNDEFINED,UNDEFINED,UNDEFINED}};
 }
 
 std::vector<GridLocation> Grid::getLocations() {
-	return this->locations;
+	std::vector<GridLocation> locations;
+	for (std::pair<GridLocation, std::vector<GridLocation>> pair : this->adjacency_matrix) {
+		locations.push_back(pair.first);
+	}
+	return locations;
 }
 
 bool Grid::in_bounds(GridLocation suspectLoc) {
