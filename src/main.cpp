@@ -7,7 +7,31 @@
 
 #include <iostream>
 #include <string>
+#include <queue>
 #include "../includes/Grid.h"
+
+int manhattanDistance(GridLocation src, GridLocation target) {
+	return abs(src.x - target.x) + abs(src.y - target.y);
+}
+
+bool compareNodes(const std::pair<GridLocation, int>& loc1, const std::pair<GridLocation, int>& loc2) {
+        return loc1.second < loc2.second;
+}
+
+std::vector<GridLocation> AStar(Grid &graph, GridLocation src, GridLocation dest) {
+	std::vector<GridLocation> route;
+	std::priority_queue<std::pair<GridLocation, int>> open_list;
+	std::vector<GridLocation> closed_list;
+
+	route.push_back(src);
+	open_list.push(std::pair<GridLocation, int>(src, manhattanDistance(src, dest)));
+
+	// g is distance from src
+	// h is distance from dest
+
+	GridLocation curr = src;
+
+}
 
 using namespace std;
 
