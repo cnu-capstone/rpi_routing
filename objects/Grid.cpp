@@ -77,7 +77,7 @@ void Grid::parse_data(std::string data_file, std::string& data) {
 		int y = std::stoi(param);
 
 		GridLocation curr{id,x,y};
-		this->locations.push_back(curr);
+//		this->locations.push_back(curr);
 
 		std::vector<GridLocation> neighbors;
 
