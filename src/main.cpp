@@ -14,13 +14,20 @@ int manhattanDistance(GridLocation src, GridLocation target) {
 	return abs(src.x - target.x) + abs(src.y - target.y);
 }
 
-bool compareNodes(const std::pair<GridLocation, int>& loc1, const std::pair<GridLocation, int>& loc2) {
-        return loc1.second < loc2.second;
-}
+//bool compareNodes(const std::pair<GridLocation, int>& loc1, const std::pair<GridLocation, int>& loc2) {
+//        return loc1.second < loc2.second;
+//}
+
+class CompareNodes {
+public:
+	bool operator() (const std::pair<GridLocation, int>& loc1, const std::pair<GridLocation, int>& loc2) const {
+		  return loc1.second < loc2.second;
+	}
+};
 
 std::vector<GridLocation> AStar(Grid &graph, GridLocation src, GridLocation dest) {
 	std::vector<GridLocation> route;
-	std::priority_queue<std::pair<GridLocation, int>> open_list;
+	std::priority_queue<std::pair<GridLocation, int>,std::vector<std::pair<GridLocation, int>>,CompareNodes> open_list;
 	std::vector<GridLocation> closed_list;
 
 	route.push_back(src);
@@ -31,6 +38,8 @@ std::vector<GridLocation> AStar(Grid &graph, GridLocation src, GridLocation dest
 
 	GridLocation curr = src;
 
+	// Begin loop
+
 }
 
 using namespace std;
@@ -38,6 +47,7 @@ using namespace std;
 int main() {
 	string file = "data/grid_data.txt";
 	Grid grid(file);
+	// Displays locations and list of neighbors
 	for (GridLocation loc : grid.getLocations()) {
 		cout<<loc.id<<" "<<loc.x<<" "<<loc.y<<" ";
 		cout<<"Neighbors: ";
