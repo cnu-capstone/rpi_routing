@@ -18,6 +18,18 @@ struct GridLocation {
 	int id, x, y;
 };
 
+struct GridLocationHasher {
+    size_t operator()(const GridLocation& location) const {
+        return std::hash<int>()(location.id) ^ std::hash<int>()(location.x) ^ std::hash<int>()(location.y);
+    }
+};
+
+struct GridLocationEqual {
+    bool operator()(const GridLocation& lhs, const GridLocation& rhs) const {
+        return lhs.id == rhs.id;
+    }
+};
+
 class Grid {
 public:
 	Grid(std::string data_set);

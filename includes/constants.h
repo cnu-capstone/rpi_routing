@@ -10,6 +10,4 @@
 
 const int UNDEFINED = -1;
 
-
-
 #endif /* INCLUDES_CONSTANTS_H_ */
