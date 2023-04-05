@@ -7,97 +7,54 @@
 
 #include "../includes/routing.h"
 
-using namespace std;
+Node AStar(Grid &graph, GridLocation src, GridLocation dest) {
+	NodeQueue open_list;
+	std::unordered_map<GridLocation, int, GridLocationHasher, GridLocationEqual> closed_list;
 
-Node::Node(int id, int dist) : id(id), dist(dist) {}
+	Node curr = Node(src); curr.g = manhattanDistance(src, curr.loc); curr.h = manhattanDistance(curr.loc, dest);
 
-// Dijkstra's algorithm to find shortest path from a source node to all nodes
-vector<float> dijkstra(float **graph, int N, int src) {
-    // Create a vector to store distances from the source node to all other nodes
-    vector<float> dist(N, INF);
-    // Create a priority queue to store nodes in increasing order of their distances from the source node
-    priority_queue<Node, vector<Node>, CompareNodes> pq;
+	open_list.enqueue(curr);
 
-    // Set the distance of the source node to zero and add it to the priority queue
-    dist[src] = 0;
-    pq.push(Node(src, 0));
+	while (!open_list.isEmpty()) {  // Goes until queue is empty. Old used when curr = dest.
+		Node target = open_list.dequeue();
+		if (target.loc.id == dest.id) {
+			return target;
+		}
+		else {
+			curr = target;
+			std::pair<GridLocation, int> curr_cost (curr.loc, curr.g);
+			closed_list.insert(curr_cost);
+			int curr_f = curr.g + curr.h;
+			for (GridLocation neighbor : graph.getNeighbors(curr.loc.id)) {
+				// Cost from curr to neighbor
+				int curr_to_neighbor_cost = manhattanDistance(curr.loc, neighbor);
 
-    // Process all nodes in the priority queue
-    while (!pq.empty()) {
-        // Get the node with the smallest distance from the priority queue
-        Node node = pq.top();
-        pq.pop();
+				Node neighbor_node = Node(neighbor, curr); neighbor_node.h = manhattanDistance(neighbor, dest);
 
-        // Update the distances of all adjacent nodes
-        for (int i = 0; i < N; i++) {
-            if (graph[node.id][i] != 0 && dist[node.id] + graph[node.id][i] < dist[i]) {
-                dist[i] = dist[node.id] + graph[node.id][i];
-                pq.push(Node(i, dist[i]));
-            }
-        }
-    }
-
-    return dist;
+				if ((open_list.findNode(neighbor_node)) && (curr_to_neighbor_cost < open_list.getNodeCost(neighbor_node))) {
+					open_list.replaceNode(neighbor_node);
+				}
+				if ((closed_list.find(neighbor) != closed_list.end()) && (curr_to_neighbor_cost < closed_list.find(neighbor)->second)) {
+					closed_list.erase(neighbor);
+				}
+				if ((!open_list.findNode(neighbor_node)) && (closed_list.find(neighbor) == closed_list.end())) {
+					open_list.enqueue(neighbor_node);
+				}
+			}
+		}
+	}
+	return Node(GridLocation{UNDEFINED,UNDEFINED,UNDEFINED});
 }
 
-// A function to print the shortest path from the source node to a destination node
-void printShortestPath(float **graph, int N, int src, int dest) {
-    vector<float> dist = dijkstra(graph, N, src);
-    // Check if there is a path from the source node to the destination node
-    if (dist[dest] == INF) {
-        cout << "No path from " << src << " to " << dest << endl;
-        return;
-    }
-    // Create a vector to store the path from the source node to the destination node
-    vector<int> path;
-    int curr = dest;
-    while (curr != src) {
-        path.push_back(curr);
-        for (int i = 0; i < N; i++) {
-            if (graph[i][curr] != 0 && dist[curr] == dist[i] + graph[i][curr]) {
-                curr = i;
-                break;
-            }
-        }
-    }
-    path.push_back(src);
-    // Reverse the path vector to get the path from the source to the destination
-    reverse(path.begin(), path.end());
-    // Print the path
-    cout << "Shortest path from " << src << " to " << dest << " is: ";
-    for (int i = 0; i < path.size(); i++) {
-        cout << path[i] << " ";
-    }
-    cout << endl;
+std::vector<Node> getRoute(Node final_node) {
+	std::vector<Node> route;
+	route.push_back(final_node);
+
+	std::shared_ptr<Node> next = std::move(final_node.parent);
+	while (next) {
+		route.push_back(*next);
+		next = std::move(next->parent);
+	}
+	std::reverse(route.begin(), route.end());
+	return route;
 }
-
-// An example usage of the functions
-//int main() {
-//    int N = 5;
-//    int **graph = new int*[N];
-//    for (int i = 0; i < N; i++) {
-//        graph[i] = new int[N];
-//        for (int j = 0; j < N; j++) {
-//            graph[i][j] = 0;
-//        }
-//    }
-//    graph[0][1] = 2;
-//    graph[0][2] = 4;
-//    graph[1][2] = 1;
-//    graph[1][3] = 7;
-//    graph[2][3] = 3;
-//    graph[3][4] = 2;
-//
-//    int src = 0;
-//    int dest = 4;
-//
-//    printShortestPath(graph, N, src, dest);
-//
-//    for (int i = 0; i < N; i++) {
-//        delete[] graph[i];
-//    }
-//    delete[] graph;
-//
-//    return 0;
-//}
-

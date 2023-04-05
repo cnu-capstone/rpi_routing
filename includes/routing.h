@@ -8,40 +8,15 @@
 #ifndef INCLUDES_ROUTING_H_
 #define INCLUDES_ROUTING_H_
 
-#include <iostream>
 #include <vector>
-#include <queue>
-#include <algorithm>
-#include <limits.h>
-#include <float.h>
-#include "DistanceMatrix.h"
+#include <unordered_map>
+#include "Grid.h"
+#include "constants.h"
+#include "NodeQueue.h"
+#include "Node.h"
 
-//#define INF INT_MAX
-#define INF FLT_MAX
+Node AStar(Grid &graph, GridLocation src, GridLocation dest);
 
-// A class to represent a graph node
-class Node {
-public:
-    int id, dist;
-    Node(int id, int dist);
-};
-
-// A comparison class to be used in priority queue
-class CompareNodes {
-public:
-    bool operator() (const Node& node1, const Node& node2) {
-        return node1.dist > node2.dist;
-    }
-};
-
-//int* nearest_neighbor(DistanceMatrix &matrix);
-
-//int* dijkstra
-
-std::vector<float> dijkstra(float **graph, int N, int src);
-
-void printShortestPath(float **graph, int N, int src, int dest);
-
-
+std::vector<Node> getRoute(Node final_node);
 
 #endif /* INCLUDES_ROUTING_H_ */
