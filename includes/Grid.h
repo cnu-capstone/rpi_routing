@@ -30,6 +30,8 @@ struct GridLocationEqual {
     }
 };
 
+int manhattanDistance(GridLocation src, GridLocation target);
+
 class Grid {
 public:
 	Grid(std::string data_set);

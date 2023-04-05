@@ -13,6 +13,7 @@
 #include <queue>
 #include "routing.h"
 #include "constants.h"
+#include "Node.h"
 
 class NodeQueue {
 public:

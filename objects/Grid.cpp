@@ -7,6 +7,10 @@
 
 #include "../includes/Grid.h"
 
+int manhattanDistance(GridLocation src, GridLocation target) {
+	return abs(src.x - target.x) + abs(src.y - target.y);
+}
+
 Grid::Grid(std::string data_set) {
 	this->width = 0;  // This be a num read from the file
 	this->height = 0;
@@ -15,13 +19,14 @@ Grid::Grid(std::string data_set) {
 
 	std::vector<GridLocation> locations = this->getLocations();
 
-	for (std::pair<GridLocation, std::vector<GridLocation>> Pair : this->adjacency_matrix) {
-		for (GridLocation neighbor : Pair.second) {
+	for (std::pair<GridLocation, std::vector<GridLocation>>& Pair : this->adjacency_matrix) {
+		for (GridLocation& neighbor : Pair.second) {
 			if (neighbor.x == UNDEFINED || neighbor.y == UNDEFINED) {
-				for (GridLocation loc : locations) {
+				for (GridLocation& loc : locations) {
 					if (neighbor.id == loc.id) {
 						neighbor.x = loc.x;
 						neighbor.y = loc.y;
+						break;
 					}
 				}
 			}

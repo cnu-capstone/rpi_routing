@@ -5,12 +5,12 @@
  *      Author: potts
  */
 
-#include <iostream>
-#include <string>
-#include "../includes/DistanceMatrix.h"
-#include "../includes/routing.h"
+//#include <iostream>
+//#include <string>
+//#include "../includes/DistanceMatrix.h"
+//#include "../includes/routing.h"
 
-using namespace std;
+//using namespace std;
 
 //int main() {
 //	string file = "data/test.txt";

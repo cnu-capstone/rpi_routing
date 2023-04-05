@@ -13,6 +13,8 @@ bool sort_by_f_val(const Node& node1, const Node& node2) {
 
 NodeQueue::NodeQueue() {}
 
+NodeQueue::~NodeQueue() {}
+
 void NodeQueue::enqueue(Node node) {
 	this->data_members.push_back(node);
 	this->data_queue.push(node);
@@ -21,10 +23,17 @@ void NodeQueue::enqueue(Node node) {
 
 Node NodeQueue::dequeue() {
 	Node next = this->data_queue.front();
+	// DEBUGGING
+//	if (next.loc.id == 10 || next.loc.id == 19) {
+//		int i = 0;
+//	}
 	this->data_queue.pop();
 	for (std::vector<Node>::iterator it=this->data_members.begin(); it != this->data_members.end(); it++) {
 		if ((*it).loc.id == next.loc.id) {
 			this->data_members.erase(it);
+		}
+		if (this->data_members.empty()) {
+			break;
 		}
 	}
 	return next;
