@@ -23,14 +23,10 @@ void NodeQueue::enqueue(Node node) {
 
 Node NodeQueue::dequeue() {
 	Node next = this->data_queue.front();
-	// DEBUGGING
-//	if (next.loc.id == 10 || next.loc.id == 19) {
-//		int i = 0;
-//	}
 	this->data_queue.pop();
 	for (std::vector<Node>::iterator it=this->data_members.begin(); it != this->data_members.end(); it++) {
 		if ((*it).loc.id == next.loc.id) {
-			this->data_members.erase(it);
+			this->data_members.erase(it);  // There was a collision here where it would try to erase some shared memory
 		}
 		if (this->data_members.empty()) {
 			break;

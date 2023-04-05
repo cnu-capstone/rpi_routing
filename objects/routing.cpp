@@ -7,29 +7,8 @@
 
 #include "../includes/routing.h"
 
-//int manhattanDistance(GridLocation src, GridLocation target) {
-//	return abs(src.x - target.x) + abs(src.y - target.y);
-//}
-
-//Node::Node(GridLocation location): parent(0), loc(location), g(UNDEFINED), h(UNDEFINED) {
-//}
-//
-//Node::Node(GridLocation location, Node parent): loc(location), h(UNDEFINED) {
-//	this->parent = new Node(parent);
-//	this->g = this->parent->g + manhattanDistance(this->parent->loc, location);
-//}
-//
-//Node::Node(const Node& other) {
-//	this->parent = other.parent;
-//	this->loc = other.loc;
-//	this->g = other.g;
-//	this->h = other.h;
-//}
-
 Node AStar(Grid &graph, GridLocation src, GridLocation dest) {
-//	std::vector<Node> route;
 	NodeQueue open_list;
-//	std::unordered_set<GridLocation,GridLocationHasher,GridLocationEqual> closed_list;
 	std::unordered_map<GridLocation, int, GridLocationHasher, GridLocationEqual> closed_list;
 
 	Node curr = Node(src); curr.g = manhattanDistance(src, curr.loc); curr.h = manhattanDistance(curr.loc, dest);
@@ -51,22 +30,7 @@ Node AStar(Grid &graph, GridLocation src, GridLocation dest) {
 				int curr_to_neighbor_cost = manhattanDistance(curr.loc, neighbor);
 
 				Node neighbor_node = Node(neighbor, curr); neighbor_node.h = manhattanDistance(neighbor, dest);
-//				Node neighbor_node = Node(neighbor); neighbor_node.g = curr.g + curr_to_neighbor_cost; neighbor_node.h = manhattanDistance(neighbor, dest);
 
-//				int neighbor_g = curr.g + curr_to_neighbor_cost;
-//				int neighbor_h = manhattanDistance(neighbor, dest);
-//				Node neighbor_node = Node(neighbor); neighbor_node.g = neighbor_g; neighbor_node.h = neighbor_h;
-
-//				if ((neighbor_g < curr.g) && (closed_list.find(neighbor) != closed_list.end())) {
-//					neighbor_node.parent = new Node(curr);
-//
-//				}
-//				else if (((curr.g+curr_to_neighbor_cost) < neighbor_g) && (open_list.findNode(neighbor_node))) {
-//
-//				}
-//				else if ((open_list.findNode(neighbor_node)) && (closed_list.find(neighbor) != closed_list.end())) {
-//					neighbor_node.parent = new Node(curr);
-//					open_list.enqueue(neighbor_node);
 				if ((open_list.findNode(neighbor_node)) && (curr_to_neighbor_cost < open_list.getNodeCost(neighbor_node))) {
 					open_list.replaceNode(neighbor_node);
 				}
@@ -87,11 +51,9 @@ std::vector<Node> getRoute(Node final_node) {
 	route.push_back(final_node);
 
 	std::shared_ptr<Node> next = std::move(final_node.parent);
-//	Node* next = final_node.parent;
 	while (next) {
 		route.push_back(*next);
 		next = std::move(next->parent);
-//		next = (*next).parent;
 	}
 	std::reverse(route.begin(), route.end());
 	return route;

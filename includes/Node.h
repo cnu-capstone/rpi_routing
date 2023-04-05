@@ -19,8 +19,6 @@ public:
 	Node(const Node& other);  // Copy constructor
 	~Node();
 	std::shared_ptr<Node> parent;
-//	Node* parent;
-//	Node* child;
 	GridLocation loc;
 	int g; 	// g is distance from src
 	int h;  // h is distance from dest
