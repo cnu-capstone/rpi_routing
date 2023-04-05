@@ -43,6 +43,15 @@ bool NodeQueue::findNode(Node node) {
 	return false;
 }
 
+int NodeQueue::getNodeCost(Node node) {
+	for (std::vector<Node>::iterator it=this->data_members.begin(); it != this->data_members.end(); it++) {
+		if ((*it).loc.id == node.loc.id) {
+			return (*it).g;
+		}
+	}
+	return UNDEFINED;
+}
+
 void NodeQueue::replaceNode(Node node) {
 	// Gonna go out on a limb and assume this->data_members is accurate.
 	for (std::vector<Node>::iterator it=this->data_members.begin(); it != this->data_members.end(); it++) {

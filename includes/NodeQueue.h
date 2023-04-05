@@ -11,7 +11,8 @@
 #include <vector>
 #include <algorithm>
 #include <queue>
-#include <routing.h>
+#include "routing.h"
+#include "constants.h"
 
 class NodeQueue {
 public:
@@ -21,6 +22,7 @@ public:
 	Node dequeue();
 	bool isEmpty();
 	bool findNode(Node node);
+	int getNodeCost(Node node);
 	void replaceNode(Node node);
 private:
 	void sort();
