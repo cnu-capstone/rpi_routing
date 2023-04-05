@@ -13,6 +13,7 @@
 #include <queue>
 #include <algorithm>
 #include "Grid.h"
+#include "constants.h"
 
 // A class to represent a graph node
 class Node {

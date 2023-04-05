@@ -11,7 +11,7 @@ int manhattanDistance(GridLocation src, GridLocation target) {
 	return abs(src.x - target.x) + abs(src.y - target.y);
 }
 
-Node::Node(GridLocation location): parent(0), loc(location), g(0), h(0) {
+Node::Node(GridLocation location): parent(0), loc(location), g(UNDEFINED), h(UNDEFINED) {
 }
 
 
