@@ -33,4 +33,6 @@ public:
     }
 };
 
+int manhattanDistance(GridLocation src, GridLocation target);
+
 #endif /* INCLUDES_ROUTING_H_ */
