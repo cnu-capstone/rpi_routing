@@ -5,6 +5,8 @@
  *      Author: potts
  */
 
+#include <bitset>
+
 #include <iostream>
 #include <string>
 #include "../includes/Grid.h"
@@ -13,8 +15,8 @@
 using namespace std;
 
 int main() {
-	string file = "data/grid_data.txt";
-	Grid grid(file);
+//	string file = "data/grid_data.txt";
+//	Grid grid(file);
 	// Displays locations and list of neighbors
 //	for (GridLocation loc : grid.getLocations()) {
 //		cout<<loc.id<<" "<<loc.x<<" "<<loc.y<<" ";
@@ -25,10 +27,10 @@ int main() {
 //		cout<<endl;
 //	}
 
-	for (Node node : getRoute(AStar(grid, {1,0,0}, {100,9,9}))) {
-		std::cout<<node.loc.id<<" ";
-	}
-	std::cout<<std::endl;
+//	for (Node node : getRoute(AStar(grid, {1,0,0}, {100,9,9}))) {
+//		std::cout<<node.loc.id<<" ";
+//	}
+//	std::cout<<std::endl;
 
 	return 0;
 }
