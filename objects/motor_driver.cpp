@@ -66,7 +66,7 @@
 instruction_block route_to_instructions(CARDINAL_DIR facing, std::vector<Node> route) {
 	instruction_block block;
 
-	for (int i = 0; i < route.size(); i++) {
+	for (std::vector<Node>::size_type i = 0; i < route.size(); i++) {
 		if (i > 0) {
 			//	// Which direction are we facing?
 			//	// If pos delta x -> Facing EAST (pos x direction)
@@ -91,21 +91,7 @@ instruction_block route_to_instructions(CARDINAL_DIR facing, std::vector<Node> r
 		}
 
 		CARDINAL_DIR driving;
-//		switch (facing) {
-//		case NORTH:
-//			break;
-//		case EAST:
-//			break;
-//		case SOUTH:
-//			break;
-//		case WEST:
-//			break;
-//		}
-		// Facing N/S or E/W
-//		if (((facing == NORTH || facing == SOUTH) && (driving == NORTH || driving == SOUTH)) ||
-//				((facing == EAST || facing == WEST) && (driving == EAST || driving == WEST))) {
-//			// Go straight
-//		}
+
 		// If driving is not on the left or right of facing: we can go straight.
 		if (((*left.find(facing)).second != driving) || ((*right.find(facing)).second != driving)) {
 
@@ -113,10 +99,16 @@ instruction_block route_to_instructions(CARDINAL_DIR facing, std::vector<Node> r
 		else {
 			// We need to turn
 			// Left turn
-			if () {
+			if ((*left.find(facing)).second == driving) {
 
 			}
 			// Right turn
+			else if ((*right.find(facing)).second == driving) {
+
+			}
+			else {
+				// pull a U-ey
+			}
 		}
 
 	}
