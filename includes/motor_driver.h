@@ -12,7 +12,8 @@
 #include "routing.h"
 #include "constants.h"
 
-typedef std::vector<std::bitset<INSTRUCTION_SIZE>> instruction_block;
+typedef std::bitset<INSTRUCTION_SIZE> instruction;
+typedef std::vector<instruction> instruction_block;
 
 enum CARDINAL_DIR {NORTH, EAST, SOUTH, WEST};
 

@@ -10,6 +10,8 @@
 
 #define INSTRUCTION_SIZE 8
 
+#define SUCCESS 0
+
 #define STALL 0  // {0,0,0};
 #define RLEFT 1  // {0,0,1};
 #define RRIGHT 2  // {0,1,0};

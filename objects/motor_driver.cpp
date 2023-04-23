@@ -74,7 +74,7 @@ instruction_block route_to_instructions(CARDINAL_DIR facing, std::vector<Node> r
 			//	// If neg delta x -> Facing WEST (neg x direction)
 			//	// If neg delta y -> Facing SOUTH (neg y direction)
 			int delta_x_from_prev = route[i].loc.x - route[i - 1].loc.x;
-			int delta_y_from_prev = route[i].loc.x - route[i - 1].loc.x;
+			int delta_y_from_prev = route[i].loc.y - route[i - 1].loc.y;
 
 			if (delta_x_from_prev > 0) {
 				facing = EAST;
