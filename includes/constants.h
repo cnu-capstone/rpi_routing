@@ -11,6 +11,7 @@
 #define INSTRUCTION_SIZE 8
 
 #define SUCCESS 0
+#define FAIL -10
 
 #define STALL 0  // {0,0,0};
 #define RLEFT 1  // {0,0,1};

@@ -12,49 +12,73 @@
 #include "../includes/Grid.h"
 #include "../includes/routing.h"
 #include "../includes/uart_comm.h"
-#include "../motor_driver.h"
+#include "../includes/motor_driver.h"
 
 using namespace std;
 
 //int main() {
-////	string file = "data/grid_data.txt";
-////	Grid grid(file);
-//	// Displays locations and list of neighbors
-////	for (GridLocation loc : grid.getLocations()) {
-////		cout<<loc.id<<" "<<loc.x<<" "<<loc.y<<" ";
-////		cout<<"Neighbors: ";
-////		for (GridLocation neighbor : grid.getNeighbors(loc.id)) {
-////			cout<<neighbor.id<<" ";
-////		}
-////		cout<<endl;
-////	}
+//	string file = "data/lutr300_map.txt";
+//	Grid grid(file);
+//	//  Displays locations and list of neighbors
+//	//	for (GridLocation loc : grid.getLocations()) {
+//	//		cout<<loc.id<<" "<<loc.x<<" "<<loc.y<<" ";
+//	//		cout<<"Neighbors: ";
+//	//		for (GridLocation neighbor : grid.getNeighbors(loc.id)) {
+//	//			cout<<neighbor.id<<" ";
+//	//		}
+//	//		cout<<endl;
+//	//	}
 //
-////	for (Node node : getRoute(AStar(grid, {1,0,0}, {100,9,9}))) {
-////		std::cout<<node.loc.id<<" ";
-////	}
-////	std::cout<<std::endl;
+//	// {100, 3, 0}
+//	// {891, 26, 32}
+//
+//	vector<Node> route = getRoute(AStar(grid, {1,0,0}, {891, 26, 32}));
+//
+//	for (Node node : route) {
+//		std::cout<<node.loc.id<<" ";
+//	}
+//	std::cout<<std::endl;
+//
+//	instruction_block instructions = route_to_instructions(EAST, route);
+//
+//	for (std::bitset<INSTRUCTION_SIZE> instr : instructions) {
+//		string bit_string = instr.to_string();
+//		cout<<bit_string<<endl;
+//	}
 //
 //	return 0;
 //}
 
 int main() {
 	// Map
-	string dataset = "data/grid_data.txt";
+	string dataset = "data/lutr300_map.txt";
 	// AWS dropbox file
-	std::string aws_data = "/home/pi/Desktop/AWS/location.txt";
+	string aws_data = "/home/pi/Desktop/AWS/location.txt";
 
 	Grid grid(dataset);
 
 	int uart_port = uart_init();
 
+	if (uart_port == TCGETATTR_ERR || uart_port == TCSETATTR_ERR) {
+		cout<<"Closing program..."<<endl;
+		return FAIL;
+	}
+
+	while (uart_port == SERIAL_ACCESS_ERR) {
+		sleep(1);
+		uart_port = uart_init();
+	}
+
 	char msg[MSG_SIZE];
 
 	char read_buff[BUFFER_SIZE];
 
-	std::string aws_data_string;
+	string aws_data_string;
 
 	GridLocation src = {UNDEFINED, UNDEFINED, UNDEFINED};
 	GridLocation dest = {UNDEFINED, UNDEFINED, UNDEFINED};
+
+	CARDINAL_DIR facing = EAST;
 
 	/*
 	 * Read data from AWS
@@ -65,15 +89,17 @@ int main() {
 		// Read location from aws
 		FileIO fio(aws_data);
 		bool read_success = fio.read(aws_data_string);
+//		bool read_success = true;
 
 		if (read_success) {  // Create GridLocation from AWS request
-			if (std::strcmp(aws_data_string.c_str(), "Forward") == 0) {  // If string is "Forward"
+			if (strcmp(aws_data_string.c_str(), "LUTR 302") == 0) {
+				dest = {891, 26, 32};
 			}
-			else if (std::strcmp(aws_data_string.c_str(), "Left") == 0) {  // If string is "Left"
+			else if (strcmp(aws_data_string.c_str(), "LUTR 303") == 0) {
+				dest = {891, 26, 32};
 			}
-			else if (std::strcmp(aws_data_string.c_str(), "Right") == 0) {  // If string is "Right"
-			}
-			else if (std::strcmp(aws_data_string.c_str(), "Reverse") == 0) {  // If string is "Reverse"
+			else if (strcmp(aws_data_string.c_str(), "LUTR 304") == 0) {
+				dest = {891, 26, 32};
 			}
 			else {
 				dest = {UNDEFINED, UNDEFINED, UNDEFINED};
@@ -81,14 +107,49 @@ int main() {
 		}
 		else {
 			cout<<"No data read..."<<endl;
+			sleep(1);
+			continue;
 		}
 
 		// Generate route from current location to target
 		vector<Node> route;
+		if (dest.id != UNDEFINED) {
+			route = getRoute(AStar(grid, src, dest));
+		}
 
-		// What direction are we facing?
-		CARDINAL_DIR facing;
+		// Translate route to motor instructions
+		instruction_block instructions = route_to_instructions(facing, route);
 
+		// Send instructions to PICO
+		string msg_string;
+
+		for (bitset<INSTRUCTION_SIZE> instr : instructions) {
+			msg_string = instr.to_string();
+
+			strcpy(msg, msg_string.c_str());
+
+			sleep(1);
+
+			write(uart_port, msg, sizeof(msg));
+
+			int bytes_read = read(uart_port, &read_buff, sizeof(read_buff));
+
+			if (bytes_read < 0) {
+				cout<<"Error reading data..."<<endl;
+			}
+
+			cout<<"Read "<<bytes_read<<" bytes. Received message: ";
+
+			const char* char_p = &read_buff[0];
+
+			for (int i = 0; i < bytes_read; i++) {
+				cout<<*(char_p+i);
+			}
+			cout<<endl;
+		}
+
+		// Reset for next iteration
+		// What direction are we facing at the end?
 		GridLocation last_loc = route[route.size() - 1].loc;
 		GridLocation before_last = route[route.size() - 2].loc;
 
@@ -108,39 +169,9 @@ int main() {
 			facing = SOUTH;
 		}
 
-		// Translate route to motor instructions
-		instruction_block instructions = route_to_instructions(facing, route);
-
-		// Send instructions to PICO
-		std::string msg_string;
-
-		for (bitset<INSTRUCTION_SIZE> instr : instructions) {
-			msg_string = instr.to_string();
-
-			strcpy(msg, msg_string.c_str());
-
-			sleep(1);
-
-			write(uart_port, msg, sizeof(msg));
-
-			int bytes_read = read(uart_port, &read_buff, sizeof(read_buff));
-
-			if (bytes_read < 0) {
-				std::cout<<"Error reading data..."<<std::endl;
-			}
-
-			std::cout<<"Read "<<bytes_read<<" bytes. Received message: ";
-
-			const char* char_p = &read_buff[0];
-
-			for (int i = 0; i < bytes_read; i++) {
-				std::cout<<*(char_p+i);
-			}
-			std::cout<<std::endl;
-		}
-
-		// Reset for next iteration
 		fio.clear();
+		// Where did we end/ are we starting from?
+		src = (*route.end()).loc;
 	}
 
 	close(uart_port);

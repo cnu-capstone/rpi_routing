@@ -12,13 +12,13 @@
 #include "routing.h"
 #include "constants.h"
 
-typedef std::bitset<INSTRUCTION_SIZE> instruction;
-typedef std::vector<instruction> instruction_block;
+//typedef std::bitset<INSTRUCTION_SIZE> instruction;
+typedef std::vector<std::bitset<INSTRUCTION_SIZE>> instruction_block;
 
 enum CARDINAL_DIR {NORTH, EAST, SOUTH, WEST};
 
-std::unordered_map<CARDINAL_DIR, CARDINAL_DIR> left ({{NORTH, WEST}, {WEST, SOUTH}, {SOUTH, EAST}, {EAST, NORTH}});
-std::unordered_map<CARDINAL_DIR, CARDINAL_DIR> right ({{NORTH, EAST}, {EAST, SOUTH}, {SOUTH, WEST}, {WEST, NORTH}});
+const std::unordered_map<CARDINAL_DIR, CARDINAL_DIR> left ({{NORTH, WEST}, {WEST, SOUTH}, {SOUTH, EAST}, {EAST, NORTH}});
+const std::unordered_map<CARDINAL_DIR, CARDINAL_DIR> right ({{NORTH, EAST}, {EAST, SOUTH}, {SOUTH, WEST}, {WEST, NORTH}});
 
 // Moved to constants.h
 //#define STALL 0  // {0,0,0};
@@ -35,8 +35,11 @@ struct instruction {
 //	std::bitset<INSTRUCTION_SIZE> binary_string;
 };
 
+CARDINAL_DIR dir_facing_check(GridLocation curr, GridLocation prev);
+CARDINAL_DIR dir_driving_check(GridLocation curr, GridLocation next);
+
 //instruction_block subroute_to_instructions(GridLocation src, GridLocation dest, GridLocation prev);
 
-instruction_block route_to_instructions(CARDINAL_DIR facing, std::vector<Node> route);
+instruction_block route_to_instructions(CARDINAL_DIR facing, std::vector<Node>& route);
 
 #endif /* INCLUDES_MOTOR_DRIVER_H_ */
