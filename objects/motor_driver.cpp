@@ -7,62 +7,6 @@
 
 #include "../includes/motor_driver.h"
 
-//instruction_block subroute_to_instructions(GridLocation src, GridLocation dest, GridLocation prev) {
-//	instruction_block block;
-//	// Which direction are we facing?
-//	CARDINAL_DIR facing;
-//	// If pos delta x -> Facing EAST (pos x direction)
-//	// If pos delta y -> Facing NORTH (pos y direction)
-//	// If neg delta x -> Facing WEST (neg x direction)
-//	// If neg delta y -> Facing SOUTH (neg y direction)
-//	int delta_x_from_prev = src.x - prev.x;
-//	int delta_y_from_prev = src.y - prev.y;
-//
-//	if (delta_x_from_prev > 0) {
-//		facing = EAST;
-//	}
-//	else if (delta_x_from_prev < 0) {
-//		facing = WEST;
-//	}
-//	else if (delta_y_from_prev > 0) {
-//		facing = NORTH;
-//	}
-//	else if (delta_y_from_prev < 0) {
-//		facing = SOUTH;
-//	}
-//
-//	CARDINAL_DIR driving;
-//
-//	int delta_x_to_dest = dest.x - src.x;
-//	int delta_y_to_dest = dest.y - src.y;
-//
-//	if (delta_x_to_dest > 0) {
-//		driving = EAST;
-//	}
-//	else if (delta_x_to_dest < 0) {
-//		driving = WEST;
-//	}
-//	else if (delta_y_to_dest > 0) {
-//		driving = NORTH;
-//	}
-//	else if (delta_y_to_dest < 0) {
-//		driving = SOUTH;
-//	}
-//
-//	std::pair<CARDINAL_DIR, CARDINAL_DIR> transition (facing, driving);
-//
-//
-//	// move in y direction
-//	if (abs(dest.y - src.y) > 0) {
-//
-//	}
-//	// move in x direction
-//	else if (abs(dest.x - src.x) > 0) {
-//
-//	}
-//	return block;
-//}
-
 CARDINAL_DIR dir_facing_check(GridLocation curr, GridLocation prev) {
 	// Which direction are we facing?
 	// If pos delta x -> Facing EAST (pos x direction)
@@ -118,7 +62,6 @@ instruction_block route_to_instructions(CARDINAL_DIR facing, std::vector<Node>& 
 	int i = 0;
 
 	while (i < route.size()) {
-//	for (std::vector<Node>::size_type i = 0; i < route.size(); i++) {
 		if (i > 0) {
 			facing = dir_facing_check(route[i].loc, route[i - 1].loc);
 		}
