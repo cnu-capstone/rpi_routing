@@ -8,7 +8,6 @@
 #include <bitset>
 #include <iostream>
 #include <string>
-#include <sys/poll.h>
 #include "../includes/Grid.h"
 #include "../includes/routing.h"
 #include "../includes/uart_comm.h"
@@ -92,32 +91,48 @@ int main() {
 
 		for (bitset<INSTRUCTION_SIZE> instr : instructions) {
 			msg_string = instr.to_string();
+			string ready_ack = "READY TO READ\n";
 
 			strcpy(msg, msg_string.c_str());
 
-//			sleep(1);
-			struct pollfd uart_out_poll = {STDIN_FILENO, POLLOUT};  // Connection to stdin file descriptor defining instream signal
-			if (poll(&uart_out_poll, 1, 1000)) {  // Check stdin for data, timeout after 1 second
-				write(uart_port, msg, sizeof(msg));
+			sleep(1);
+
+			// Check if acknowledgement is sent
+			int bytes_read = read(uart_port, &read_buff, sizeof(read_buff));
+			while (bytes_read < 0 || strncmp(read_buff, ready_ack.c_str(), sizeof(ready_ack.c_str())) != 0) {
+				bytes_read = read(uart_port, &read_buff, sizeof(read_buff));
 			}
 
-			struct pollfd uart_in_poll = {STDIN_FILENO, POLLIN|POLLPRI};  // Connection to stdin file descriptor defining instream signal
-			if (poll(&uart_in_poll, 1, 1000)) {  // Check stdin for data, timeout after 1 second
-				int bytes_read = read(uart_port, &read_buff, sizeof(read_buff));
+			cout<<"Read ACK: ";
+//			const char* char_p = &read_buff[0];
 
-				if (bytes_read < 0) {
-					cout<<"Error reading data..."<<endl;
-				}
-
-				cout<<"Read "<<bytes_read<<" bytes. Received message: ";
-
-				const char* char_p = &read_buff[0];
-
-				for (int i = 0; i < bytes_read; i++) {
-					cout<<*(char_p+i);
-				}
-				cout<<endl;
+			for (int i = 0; i < bytes_read; i++) {
+				cout<<*(&read_buff+i);
 			}
+			cout<<endl;
+
+//			struct pollfd uart_out_poll = {STDIN_FILENO, POLLOUT};  // Connection to stdin file descriptor defining instream signal
+//			if (poll(&uart_out_poll, 1, 1000)) {  // Check stdin for data, timeout after 1 second
+			write(uart_port, msg, sizeof(msg));
+//			}
+
+//			struct pollfd uart_in_poll = {STDIN_FILENO, POLLIN|POLLPRI};  // Connection to stdin file descriptor defining instream signal
+//			if (poll(&uart_in_poll, 1, 1000)) {  // Check stdin for data, timeout after 1 second
+			bytes_read = read(uart_port, &read_buff, sizeof(read_buff));
+
+			if (bytes_read < 0) {
+				cout<<"Error reading data..."<<endl;
+			}
+
+			cout<<"Read "<<bytes_read<<" bytes. Received message: ";
+
+			const char* char_p = &read_buff[0];
+
+			for (int i = 0; i < bytes_read; i++) {
+				cout<<*(char_p+i);
+			}
+			cout<<endl;
+//			}
 		}
 
 		// Reset for next iteration
