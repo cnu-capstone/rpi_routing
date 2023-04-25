@@ -122,6 +122,8 @@ instruction_block route_to_instructions(CARDINAL_DIR facing, std::vector<Node>& 
 		}
 		i++;
 	}
+	// Adding stall at the end of each block
+	block.push_back(std::bitset<INSTRUCTION_SIZE>("10000000"));
 	return block;
 }
 

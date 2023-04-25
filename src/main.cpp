@@ -8,6 +8,7 @@
 #include <bitset>
 #include <iostream>
 #include <string>
+#include <sys/poll.h>
 #include "../includes/Grid.h"
 #include "../includes/routing.h"
 #include "../includes/uart_comm.h"
@@ -41,7 +42,7 @@ int main() {
 
 	string aws_data_string;
 
-	GridLocation src = {UNDEFINED, UNDEFINED, UNDEFINED};
+	GridLocation src = {1, 0, 0};
 	GridLocation dest = {UNDEFINED, UNDEFINED, UNDEFINED};
 
 	CARDINAL_DIR facing = EAST;
@@ -58,13 +59,13 @@ int main() {
 //		bool read_success = true;
 
 		if (read_success) {  // Create GridLocation from AWS request
-			if (strcmp(aws_data_string.c_str(), "LUTR 302") == 0) {
+			if (strcmp(aws_data_string.c_str(), "302\n") == 0) {
 				dest = {891, 26, 32};
 			}
-			else if (strcmp(aws_data_string.c_str(), "LUTR 303") == 0) {
+			else if (strcmp(aws_data_string.c_str(), "303\n") == 0) {
 				dest = {891, 26, 32};
 			}
-			else if (strcmp(aws_data_string.c_str(), "LUTR 304") == 0) {
+			else if (strcmp(aws_data_string.c_str(), "304\n") == 0) {
 				dest = {891, 26, 32};
 			}
 			else {
@@ -94,24 +95,29 @@ int main() {
 
 			strcpy(msg, msg_string.c_str());
 
-			sleep(1);
-
-			write(uart_port, msg, sizeof(msg));
-
-			int bytes_read = read(uart_port, &read_buff, sizeof(read_buff));
-
-			if (bytes_read < 0) {
-				cout<<"Error reading data..."<<endl;
+//			sleep(1);
+			struct pollfd uart_out_poll = {STDIN_FILENO, POLLOUT};  // Connection to stdin file descriptor defining instream signal
+			if (poll(&uart_out_poll, 1, 1000)) {  // Check stdin for data, timeout after 1 second
+				write(uart_port, msg, sizeof(msg));
 			}
 
-			cout<<"Read "<<bytes_read<<" bytes. Received message: ";
+			struct pollfd uart_in_poll = {STDIN_FILENO, POLLIN|POLLPRI};  // Connection to stdin file descriptor defining instream signal
+			if (poll(&uart_in_poll, 1, 1000)) {  // Check stdin for data, timeout after 1 second
+				int bytes_read = read(uart_port, &read_buff, sizeof(read_buff));
 
-			const char* char_p = &read_buff[0];
+				if (bytes_read < 0) {
+					cout<<"Error reading data..."<<endl;
+				}
 
-			for (int i = 0; i < bytes_read; i++) {
-				cout<<*(char_p+i);
+				cout<<"Read "<<bytes_read<<" bytes. Received message: ";
+
+				const char* char_p = &read_buff[0];
+
+				for (int i = 0; i < bytes_read; i++) {
+					cout<<*(char_p+i);
+				}
+				cout<<endl;
 			}
-			cout<<endl;
 		}
 
 		// Reset for next iteration
